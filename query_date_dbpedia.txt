@@ -1,0 +1,70 @@
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX xlink: <http://www.w3.org/1999/xlink/>
+PREFIX xsi: <http://www.w3.org/2001/XMLSchema-instance/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dbres: <http://dbpedia.org/resource/>
+PREFIX dbprop: <http://dbpedia.org/property/>
+PREFIX dbont: <http://dbpedia.org/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT distinct (str(?o) as ?label)
+WHERE {
+	?s rdf:type dbont:Person . 
+	?s PREDICATE ?o .
+	{
+		?s dbont:genre ?genre1 . 
+		?genre1 dcterms:subject ?subj . 
+		?subj skos:broader ?subj1 .
+		?subj1 skos:broader ?subj2 .
+		?subj2 skos:broader ?subj3 .
+		?subj3 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre>
+	}
+	UNION
+	{
+		?s dbont:genre ?genre1 . 
+		?genre1 dcterms:subject ?subj . 
+		?subj skos:broader ?subj1 .
+		?subj1 skos:broader ?subj2 .
+		?subj2 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre>
+	}
+	UNION
+	{
+		?s dbont:genre ?genre1 . 
+		?genre1 dcterms:subject ?subj . 
+		?subj skos:broader ?subj1 .
+		?subj1 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre>
+	}
+	UNION
+	{
+		?s dbont:genre ?genre1 . 
+		?genre1 dcterms:subject ?subj . 
+		?subj skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre>
+	} .
+	FILTER( bound(?subj) ) . 
+	FILTER( !REGEX( STR(?s), "^.*\\.$", "i" ) ) . 
+	{
+		?work1 dbont:author ?s . 
+		?work1 dbont:literaryGenre ?genre2 . 
+		?genre2 dcterms:subject ?work_subj1 . 
+		?work_subj1 skos:broader ?work_subj2 .
+		?work_subj2 skos:broader ?work_subj3 .
+		?work_subj3 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre>
+	}
+	UNION
+	{
+		?work1 dbont:author ?s . 
+		?work1 dbont:literaryGenre ?genre2 . 
+		?genre2 dcterms:subject ?work_subj1 . 
+		?work_subj1 skos:broader ?work_subj2 .
+		?work_subj2 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre>
+	}
+	UNION
+	{
+		?work1 dbont:author ?s . 
+		?work1 dbont:literaryGenre ?genre2 . 
+		?genre2 dcterms:subject ?work_subj1 . 
+		?work_subj1 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre>
+	}
+	FILTER( bound(?work_subj1) ) . 
+}

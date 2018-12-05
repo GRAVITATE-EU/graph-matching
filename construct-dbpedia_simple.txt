@@ -1,0 +1,69 @@
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX xlink: <http://www.w3.org/1999/xlink/>
+PREFIX xsi: <http://www.w3.org/2001/XMLSchema-instance/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dbres: <http://dbpedia.org/resource/>
+PREFIX dbprop: <http://dbpedia.org/property/>
+PREFIX dbont: <http://dbpedia.org/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+CONSTRUCT
+{
+	?person dcterms:subject ?work_subj1 . 
+} 
+WITH {
+	SELECT DISTINCT ?person 
+	WHERE
+	{
+		?person rdf:type dbont:Person . 
+		{
+			?person dbont:genre ?genre1 . 
+			?genre1 dcterms:subject ?subj . 
+			?subj skos:broader ?subj1 . 
+			?subj1 skos:broader ?subj2 . 
+			?subj2 skos:broader ?subj3 . 
+			?subj3 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre> 
+		}
+		UNION
+		{
+			?person dbont:genre ?genre1 . 
+			?genre1 dcterms:subject ?subj . 
+			?subj skos:broader ?subj1 . 
+			?subj1 skos:broader ?subj2 . 
+			?subj2 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre> 
+		}
+		UNION
+		{
+			?person dbont:genre ?genre1 . 
+			?genre1 dcterms:subject ?subj . 
+			?subj skos:broader ?subj1 . 
+			?subj1 skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre> 
+		}
+		UNION
+		{
+			?person dbont:genre ?genre1 . 
+			?genre1 dcterms:subject ?subj . 
+			?subj skos:broader <http://dbpedia.org/resource/Category:Fiction_by_genre> 
+		} .
+		FILTER( bound(?subj) ) . 
+		FILTER( !REGEX( STR(?person), "^.*\\.$", "i" ) ) . 
+	}
+} AS %people 
+WITH {
+	SELECT DISTINCT ?person  (COUNT ( ?work1 ) AS ?c ) 
+	WHERE
+	{
+		INCLUDE %people 
+		?work1 dbont:author ?person . 
+	}
+	GROUP BY ?person ?c
+} AS %work 
+WHERE
+{
+	INCLUDE %work 
+	FILTER( ?c < 2 ) . 
+	?work1 dbont:author ?person . 
+	?work1 dbont:literaryGenre ?genre2 . 
+	?genre2 dcterms:subject ?work_subj1 . 
+}

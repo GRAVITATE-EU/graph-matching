@@ -1,0 +1,309 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX xlink: <http://www.w3.org/1999/xlink/>
+PREFIX xsi: <http://www.w3.org/2001/XMLSchema-instance/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rso: <http://www.researchspace.org/ontology/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX crmdig: <http://www.ics.forth.gr/isl/CRMext/CRMdig.rdfs/>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ann:<http://gravitate.org/id/>
+
+CONSTRUCT
+{
+	?artifact crm:P2_has_type ?obj_type .
+	?obj_type skos:broader ?obj_type1 .
+	?obj_type1 skos:broader ?obj_type2 .
+	?obj_type2 skos:broader ?obj_type3 .
+
+	?artifact crm:P45_consists_of ?material .
+	?material skos:broader ?material1 .
+	?material1 skos:broader ?material2 .
+	?material2 skos:broader ?material3 .
+
+	?artifact crm:P108i_was_produced_by_technique ?prod_technique .
+	?artifact crm:P108i_was_produced_by_falls_within ?time_concept .
+	?artifact crm:P108i_was_produced_by_begin_of_the_begin ?time_start .
+	?artifact crm:P108i_was_produced_by_end_of_the_end ?time_end .
+	?artifact crm:P108i_was_produced_by_place ?prod_location .
+	?prod_technique skos:broader ?prod_technique1 .
+	?prod_technique1 skos:broader ?prod_technique2 .
+	?prod_technique2 skos:broader ?prod_technique3 .
+
+	?artifact crm:P128_carries_label ?symbol_label.
+	?artifact crm:P128_carries_about ?symbol_concept.
+	?symbol_concept skos:broader ?symbol_concept1 .
+	?symbol_concept1 skos:broader ?symbol_concept2 .
+	?symbol_concept2 skos:broader ?symbol_concept3 .
+}
+WHERE
+{
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact ?obj_type_pred ?obj_type .
+			FILTER( ?obj_type_pred = crm:P2_has_type || ?obj_type_pred = rso:PX_object_type || ?obj_type_pred = rso:PX_type_series || ?obj_type_pred = rso:PX_ware ) .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		?obj_type rdf:type skos:Concept .
+		OPTIONAL
+		{
+			?obj_type skos:broader ?obj_type1 .
+			OPTIONAL
+			{
+				?obj_type1 skos:broader ?obj_type2 .
+				OPTIONAL
+				{
+					?obj_type2 skos:broader ?obj_type3 .
+				}
+			}
+		} .
+	}
+}
+	UNION
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact crm:P45_consists_of ?material .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		?material rdf:type skos:Concept .
+		OPTIONAL
+		{
+			?material skos:broader ?material1 .
+			OPTIONAL
+			{
+				?material1 skos:broader ?material2 .
+				OPTIONAL
+				{
+					?material2 skos:broader ?material3 .
+				}
+			}
+		} .
+	}
+}
+	UNION
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact crm:P108i_was_produced_by ?production_event .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		?production_event crm:P9_consists_of ?prod_period .
+		OPTIONAL
+		{
+			?production_event crm:P32_used_general_technique ?prod_technique .
+			OPTIONAL
+			{
+				?prod_technique skos:broader ?prod_technique1 .
+				OPTIONAL
+				{
+					?prod_technique1 skos:broader ?prod_technique2 .
+					OPTIONAL
+					{
+						?prod_technique2 skos:broader ?prod_technique3 .
+					}
+				}
+			}
+		} .
+		OPTIONAL
+		{
+			?prod_period crm:P10_falls_within ?time_concept .
+		} .
+		OPTIONAL
+		{
+			?prod_period crm:P4_has_time-span ?time_span .
+			?time_span crm:P82a_begin_of_the_begin ?time_start .
+			?time_span crm:P82b_end_of_the_end ?time_end .
+		} .
+		OPTIONAL
+		{
+			?prod_period crm:P32_used_general_technique ?prod_technique .
+			OPTIONAL
+			{
+				?prod_technique skos:broader ?prod_technique1 .
+				OPTIONAL
+				{
+					?prod_technique1 skos:broader ?prod_technique2 .
+					OPTIONAL
+					{
+						?prod_technique2 skos:broader ?prod_technique3 .
+					}
+				}
+			}
+		} .
+		OPTIONAL {
+			?prod_period crm:P7_took_place_at ?prod_location .
+		} .
+	}
+}
+	UNION
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact crm:P43_has_dimension ?dimension .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		OPTIONAL
+		{
+			?dimension crm:P2_has_type ?type_dimension . 
+			?dimension crm:P90_has_value ?dim_value .
+			OPTIONAL
+			{
+				?dimension crm:P91_has_unit ?dim_unit .
+			}
+		} .
+	}
+}
+	UNION
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact crm:P56_bears_feature ?feature .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		OPTIONAL
+		{
+			?feature rdfs:label ?feature_label .
+		} .
+		OPTIONAL
+		{
+			?feature crm:P2_has_type ?type_feature . 
+			OPTIONAL
+			{
+				?type_feature skos:broader ?type_feature1 .
+				OPTIONAL
+				{
+					?type_feature1 skos:broader ?type_feature2 .
+					OPTIONAL
+					{
+						?type_feature2 skos:broader ?type_feature3 .
+					}
+				}
+			}
+		} .
+	}
+}
+	UNION
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact crm:P65_shows_visual_item ?visual_item .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		OPTIONAL
+		{
+			?visual_item rdfs:label ?visual_item_label .
+		} .
+		OPTIONAL
+		{
+			?visual_item crm:P2_has_type ?type_visual_item . 
+			OPTIONAL
+			{
+				?type_visual_item skos:broader ?type_visual_item1 .
+				OPTIONAL
+				{
+					?type_visual_item1 skos:broader ?type_visual_item2 .
+					OPTIONAL
+					{
+						?type_visual_item2 skos:broader ?type_visual_item3 .
+					}
+				}
+			} .
+		} .
+		OPTIONAL
+		{
+			?visual_item crm:P138_represents ?visual_item_represents . 
+			OPTIONAL
+			{
+				?visual_item_represents skos:broader ?visual_item_represents1 .
+				OPTIONAL
+				{
+					?visual_item_represents1 skos:broader ?visual_item_represents2 .
+					OPTIONAL
+					{
+						?visual_item_represents2 skos:broader ?visual_item_represents3 .
+					}
+				}
+			}
+		} .
+	}
+}
+	UNION
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact crm:P128_carries ?symbol .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		OPTIONAL
+		{
+			?symbol rdfs:label ?symbol_label .
+		} .
+		OPTIONAL
+		{
+			?symbol crm:P129_is_about ?symbol_concept .
+			OPTIONAL
+			{
+				?symbol_concept skos:broader ?symbol_concept1 .
+				OPTIONAL
+				{
+					?symbol_concept1 skos:broader ?symbol_concept2 .
+					OPTIONAL
+					{
+						?symbol_concept2 skos:broader ?symbol_concept3 .
+					}
+				}
+			}
+		} .
+		OPTIONAL
+		{
+			?event crm:P141_assigned ?symbol .
+			?event crm:P14_carried_out_by ann:NLP_algorithm .
+		} .
+		FILTER( !bound(?event) )
+	}
+}
+	UNION
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		GRAPH ?g {
+			?artifact crm:P67i_is_referred_to_by ?linguistic_obj .
+		}
+		FILTER( ?g != <http://gravitate.org/id/NLP_algorithm/graph> ) .
+		?linguistic_obj rdf:type crm:E33_Linguistic_Object .
+		OPTIONAL
+		{
+			?linguistic_obj crm:P2_has_type ?linguistic_concept .
+			OPTIONAL
+			{
+				?linguistic_concept skos:broader ?linguistic_concept1 .
+				OPTIONAL
+				{
+					?linguistic_concept1 skos:broader ?linguistic_concept2 .
+					OPTIONAL
+					{
+						?linguistic_concept2 skos:broader ?linguistic_concept3 .
+					}
+				}
+			}
+		}
+	}
+}
+}

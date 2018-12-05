@@ -1,0 +1,63 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX xlink: <http://www.w3.org/1999/xlink/>
+PREFIX xsi: <http://www.w3.org/2001/XMLSchema-instance/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rso: <http://www.researchspace.org/ontology/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX crmdig: <http://www.ics.forth.gr/isl/CRMext/CRMdig.rdfs/>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ann:<http://gravitate.org/id/>
+
+CONSTRUCT
+{
+	?artifact crm:P65_shows_visual_item ?visual_item.
+	?artifact crm:P65_shows_visual_item_label ?visual_item_label.
+	?artifact crm:P65_shows_visual_item_represents ?visual_item_represents.
+	?visual_item skos:broader ?visual_item1 .
+	?visual_item1 skos:broader ?visual_item2 .
+	?visual_item2 skos:broader ?visual_item3 .
+	?visual_item_represents skos:broader ?visual_item_represents1 .
+	?visual_item_represents1 skos:broader ?visual_item_represents2 .
+	?visual_item_represents2 skos:broader ?visual_item_represents3 .
+}
+WHERE
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		?artifact crm:P65_shows_visual_item ?visual_item .
+		OPTIONAL
+		{
+			?visual_item rdfs:label ?visual_item_label .
+		} .
+		OPTIONAL
+		{
+			?visual_item skos:broader ?visual_item1 .
+			OPTIONAL
+			{
+				?visual_item1 skos:broader ?visual_item2 .
+				OPTIONAL
+				{
+					?visual_item2 skos:broader ?visual_item3 .
+				}
+			}
+		} .
+		OPTIONAL
+		{
+			?visual_item crm:P138_represents ?visual_item_represents . 
+			OPTIONAL
+			{
+				?visual_item_represents skos:broader ?visual_item_represents1 .
+				OPTIONAL
+				{
+					?visual_item_represents1 skos:broader ?visual_item_represents2 .
+					OPTIONAL
+					{
+						?visual_item_represents2 skos:broader ?visual_item_represents3 .
+					}
+				}
+			}
+		} .
+	}
+}

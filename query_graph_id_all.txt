@@ -1,0 +1,5 @@
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> 
+SELECT ?s WHERE {
+	?s rdf:type crm:E22_Man-Made_Object . 
+}

@@ -1,0 +1,41 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX xlink: <http://www.w3.org/1999/xlink/>
+PREFIX xsi: <http://www.w3.org/2001/XMLSchema-instance/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rso: <http://www.researchspace.org/ontology/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX crmdig: <http://www.ics.forth.gr/isl/CRMext/CRMdig.rdfs/>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ann:<http://gravitate.org/id/>
+
+CONSTRUCT
+{
+	?artifact crm:P2_has_type ?obj_type .
+	?obj_type skos:broader ?obj_type1 .
+	?obj_type1 skos:broader ?obj_type2 .
+	?obj_type2 skos:broader ?obj_type3 .
+
+}
+WHERE
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		?artifact ?obj_type_pred ?obj_type .
+		FILTER( ?obj_type_pred = crm:P2_has_type || ?obj_type_pred = rso:PX_object_type || ?obj_type_pred = rso:PX_type_series || ?obj_type_pred = rso:PX_ware ) .
+		?obj_type rdf:type skos:Concept .
+		OPTIONAL
+		{
+			?obj_type skos:broader ?obj_type1 .
+			OPTIONAL
+			{
+				?obj_type1 skos:broader ?obj_type2 .
+				OPTIONAL
+				{
+					?obj_type2 skos:broader ?obj_type3 .
+				}
+			}
+		} .
+	}
+}

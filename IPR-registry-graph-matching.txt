@@ -1,0 +1,44 @@
+IPR registry graph-matching
+Last updated 18/07/2017
+
+# IT Innovation Centre software
+
+graph-matching 1.0
+	University of Southampton IT Innovation Centre
+	BSD variant. This software should only be used for research, education or evaluation purposes. A free commercial license is available on request to sem03@soton.ac.uk
+
+# 3rd party software pre-requisites (software required by module but installed independently)
+
+python 2.7.8
+	Python Software Foundation
+	Python Software Foundation License
+	http://www.python.org/psf/license
+
+munkres 1.0.12
+	Author: Brian Clapper
+	Apache Software License
+	http://software.clapper.org/munkres/
+
+gensim 3.0.1
+	Author: Radim Rehurek
+	GNU LGPLv2.1
+	http://radimrehurek.com/gensim
+
+sklearn 0.0
+	http://scikit-learn.org/stable/about.html#people
+	BSD
+
+numpy 1.13.1+mkl
+	Author: NumPy Developers
+	BSD
+	http://www.numpy.org
+
+jena 2.13.0
+	org.apache.jena
+	Apache License, Version 2.0
+	http://www.apache.org/licenses/LICENSE-2.0
+
+GraphMatching [GED tests only]
+	Prof. Dr. Kaspar Riesen
+	non-commercial research use only
+	https://www.fhnw.ch/wirtschaft/iwi/gmt [URI now unavailable see \graph-matching\doc\GED-software-email-from-author-granting-access.txt]

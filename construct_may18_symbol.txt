@@ -1,0 +1,62 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX xlink: <http://www.w3.org/1999/xlink/>
+PREFIX xsi: <http://www.w3.org/2001/XMLSchema-instance/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rso: <http://www.researchspace.org/ontology/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX crmdig: <http://www.ics.forth.gr/isl/CRMext/CRMdig.rdfs/>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ann:<http://gravitate.org/id/>
+
+CONSTRUCT
+{
+	?artifact crm:P128_carries ?symbol.
+	?symbol skos:broader ?symbol1 .
+	?symbol1 skos:broader ?symbol2 .
+	?symbol2 skos:broader ?symbol3 .
+	?artifact crm:P128_carries_concept ?symbol_concept.
+	?symbol_concept skos:broader ?symbol_concept1 .
+	?symbol_concept1 skos:broader ?symbol_concept2 .
+	?symbol_concept2 skos:broader ?symbol_concept3 .
+}
+WHERE
+{
+	OPTIONAL
+	{
+		?artifact rdf:type crm:E22_Man-Made_Object .
+		OPTIONAL
+		{
+			?artifact crm:P128_carries / crm:P129_is_about ?symbol_concept .
+			OPTIONAL
+			{
+				?symbol_concept skos:broader ?symbol_concept1 .
+				OPTIONAL
+				{
+					?symbol_concept1 skos:broader ?symbol_concept2 .
+					OPTIONAL
+					{
+						?symbol_concept2 skos:broader ?symbol_concept3 .
+					}
+				}
+			}
+		} .
+		OPTIONAL
+		{
+			?artifact crm:P128_carries ?symbol .
+			?symbol rdf:type skos:Concept .
+			OPTIONAL
+			{
+				?symbol skos:broader ?symbol1 .
+				OPTIONAL
+				{
+					?symbol1 skos:broader ?symbol2 .
+					OPTIONAL
+					{
+						?symbol2 skos:broader ?symbol3 .
+					}
+				}
+			}
+		} .
+	}
+}
