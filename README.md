@@ -4,7 +4,7 @@ Tool to query the GRAVITATE RDF artifact database and compute a pair-wise artifa
 
 # Install
 
-Copy the GRAVITATE graph matching release files to <install dir>
+Copy the GRAVITATE graph matching release files to [install dir]
 
 Install Java 1.8
 Install Python 2.7 and Pip
@@ -23,7 +23,7 @@ Edit the configuration file config.properties
 
 Run the numeric range app
 
-cd <install dir>
+cd [install dir]
 java -Xmx32g -cp “graph-construct;third-party/*” ITinnov.semantic_matching.numeric_range_app
 python numeric_range_app.py
 
